@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classes' inheritance</title>
+</head>
+<body>
+    <script>
+
+        class List {
+
+            list = [];
+
+            constructor(name) {
+                this.name = name;
+                this.setInitialList();
+            }
+
+            createItem(text, id = Date.now()) {
+                const newItem = {
+                    text,
+                    id,
+                };
+
+                this.list.push(newItem);
+                this.saveToLS();
+            }
+
+            deleteItem(id) {
+                const index = this.findItemByID(id);
+
+                if (index >= 0) {
+                    const deleted = this.list.splice(index, 1);
+                    this.saveToLS();
+                    return deleted;
+                }
+            }
+
+            editItem(id, editedText) {
+                const index = this.findItemByID(id);
+
+                if (index >= 0 && editedText) {
+                    this.list[index].text = editedText;
+                    this.saveToLS();
+                }                
+            }
+
+            findItemByID(id) {
+                return this.list.findIndex((el) => el.id === id);
+            }
+
+            saveToLS() {
+                localStorage.setItem(this.name, JSON.stringify(this.list));
+            }
+
+            setInitialList() {
+                const data = localStorage.getItem(this.name);
+                
+                this.list = data ? JSON.parse(data) : [];
+            }
+        }
+
+        class ToDoList extends List {
+
+            constructor(name) {
+                super(name);
+                super.setInitialList();
+            }
+
+            createItem(text, id = Date.now()) {
+                const newItem = {
+                    text,
+                    id,
+                    status: false,
+                };
+
+                this.list.push(newItem);
+                super.saveToLS();
+            }
+            
+            changeStatus(id) {
+                const index = super.findItemByID(id);
+
+                if (index >= 0) {
+                    this.list[index].status = true;
+                    super.saveToLS();
+                }
+            }
+
+            getStatistic() {
+                const statistic = {
+                    all: this.list.length,
+                    completed: this.list.filter( (el) => (el.status) ? true : false ).length,                          
+                }
+
+                return statistic;
+            }    
+        }
+
+        class ContactList extends List {
+            
+            constructor(name) {
+                super(name);
+                super.setInitialList();
+            }
+
+            createItem(firstName, lastName, phoneNumber, id = Date.now()) {
+                const newItem = {
+                    firstName, 
+                    lastName,                    
+                    phoneNumber,
+                    id,
+                };
+
+                this.list.push(newItem);
+                super.saveToLS();
+            }
+
+            editItem(id, firstName, lastName, phoneNumber) {
+                const index = super.findItemByID(id);
+
+                if (index >= 0 && editedText) {
+                    this.list[index].firstName = firstName;
+                    this.list[index].lastName = lastName;
+                    this.list[index].phoneNumber = phoneNumber;
+                    super.saveToLS();
+                }
+            }
+
+            search(letters) {
+                const foundItems = this.list.filter((el) => el.firstName.includes(letters) || el.lastName.includes(letters));
+
+                return foundItems;
+            }           
+        }
+
+        const toDo1 = new ToDoList('toDo1');
+
+        const contactBook1 = new ContactList('contactBook1')
+
+        toDo1.createItem('drink some tea', 12);
+        toDo1.createItem('make my homework', 13);
+
+        contactBook1.createItem('John', 'Doe', '099-111-5555', 5);
+        
+    </script>
+</body>
+</html>
