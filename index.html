@@ -17,13 +17,8 @@
                 this.setInitialList();
             }
 
-            createItem(text, id = Date.now()) {
-                const newItem = {
-                    text,
-                    id,
-                };
-
-                this.list.push(newItem);
+            createItem(item) {
+                this.list.push(item);
                 this.saveToLS();
             }
 
@@ -65,7 +60,6 @@
 
             constructor(name) {
                 super(name);
-                super.setInitialList();
             }
 
             createItem(text, id = Date.now()) {
@@ -75,8 +69,7 @@
                     status: false,
                 };
 
-                this.list.push(newItem);
-                super.saveToLS();
+                super.createItem(newItem);
             }
             
             changeStatus(id) {
@@ -102,7 +95,6 @@
             
             constructor(name) {
                 super(name);
-                super.setInitialList();
             }
 
             createItem(firstName, lastName, phoneNumber, id = Date.now()) {
@@ -113,8 +105,7 @@
                     id,
                 };
 
-                this.list.push(newItem);
-                super.saveToLS();
+                super.createItem(newItem);
             }
 
             editItem(id, firstName, lastName, phoneNumber) {
